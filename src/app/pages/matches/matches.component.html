@@ -1,0 +1,23 @@
+<div class="matches-container">
+    <mat-card>
+        <mat-card-content>
+            <h2>{{name}}</h2>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="mat-card" *ngFor="let matchDay of matchDays">
+        <mat-card-header class="mat-card-header">
+            <mat-icon>sports_soccer</mat-icon>
+            {{matchDay.round}} {{matchDay.date}}
+        </mat-card-header>
+        <mat-card-content class="mat-card-content">
+            <div *ngFor="let match of matchDay.matches">
+                {{match.team1}}
+                <span [hidden]="!match?.score">{{match?.score?.ft[0]}}</span>
+                :
+                <span [hidden]="!match?.score">{{match?.score?.ft[1]}}</span>
+                {{match.team2}}
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+</div>
