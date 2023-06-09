@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { MatchesService } from 'src/app/services/matches.service';
-
-import { groupBy } from 'lodash'
-import { Subscription } from 'rxjs';
+import Seasons from '../../shared/seasons'
 
 @Component({
   selector: 'app-matches',
@@ -11,31 +10,36 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./matches.component.scss']
 })
 export class MatchesComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+  private subs: Subscription[] = [];
 
   public name = '';
-  public matchDays = [];
+  public matchDayGroup = [];
+  public seasons: any = [];
+  public panelOpenState = false;
 
   constructor(
     private matchesService: MatchesService
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.matchesService.getMatches().subscribe((result: any) => {
-      const { name, matches } = result
-      const grouped = groupBy(matches, 'date')
-      this.matchDays = Object.values(grouped).reduce((acc, curr: any) => {
-        const [first] = curr || {}
-        const { round, date } = first
-        const matches = curr.map((v) => ({ team1: v.team1, team2: v.team2, score: v?.score }))
-        return [...acc, { round, date, matches }]
-      }, [])
+    this.seasons = Seasons
+
+    this.subs.push(this.matchesService.getMatches().subscribe((result: any) => {
+      const { name, matchDayGroup } = result
       this.name = name;
+      this.matchDayGroup = matchDayGroup
     }));
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subs.forEach(s => s.unsubscribe());
   }
 
+  public getDescription(matches) {
+    const [first, ...rest] = matches;
+    const lastDate = rest.pop().date;
+    return first.date === lastDate
+      ? first.date
+      : `${first.date} - ${lastDate}`;
+  }
 }

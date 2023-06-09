@@ -1,23 +1,37 @@
 <div class="matches-container">
     <mat-card>
-        <mat-card-content>
+        <mat-card-header class="mat-card-header">
             <h2>{{name}}</h2>
+        </mat-card-header>
+        <mat-card-content>
+            <!-- <mat-label>Sessions</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let season of seasons" [value]="season.value">
+                    {{season.name}}
+                </mat-option>
+            </mat-select> -->
         </mat-card-content>
     </mat-card>
-    <mat-card class="mat-card" *ngFor="let matchDay of matchDays">
-        <mat-card-header class="mat-card-header">
-            <mat-icon>sports_soccer</mat-icon>
-            {{matchDay.round}} {{matchDay.date}}
-        </mat-card-header>
-        <mat-card-content class="mat-card-content">
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let matchDay of matchDayGroup" (opened)="panelOpenState = true"
+            (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-icon>sports_soccer</mat-icon>
+                    {{matchDay.round}}
+                </mat-panel-title>
+                <mat-panel-description>
+                    {{getDescription(matchDay.matches)}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
             <div *ngFor="let match of matchDay.matches">
+                {{match.date}}
                 {{match.team1}}
                 <span [hidden]="!match?.score">{{match?.score?.ft[0]}}</span>
                 :
                 <span [hidden]="!match?.score">{{match?.score?.ft[1]}}</span>
                 {{match.team2}}
             </div>
-        </mat-card-content>
-    </mat-card>
-
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
