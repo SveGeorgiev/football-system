@@ -1,19 +1,17 @@
 <div class="matches-container">
+    <mat-chip-listbox *ngIf="getErrorMessage()">
+        <mat-chip-option color="warn">{{ getErrorMessage() }}</mat-chip-option>
+    </mat-chip-listbox>
     <mat-card>
         <mat-card-header class="mat-card-header">
             <h2>{{name}}</h2>
         </mat-card-header>
         <mat-card-content>
-            <!-- <mat-label>Sessions</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let season of seasons" [value]="season.value">
-                    {{season.name}}
-                </mat-option>
-            </mat-select> -->
+            <app-search (searchQuery)="onSearch($event)"></app-search>
         </mat-card-content>
     </mat-card>
-    <mat-accordion>
-        <mat-expansion-panel *ngFor="let matchDay of matchDayGroup" (opened)="panelOpenState = true"
+    <mat-accordion [hidden]="!filteredItems.length">
+        <mat-expansion-panel *ngFor="let matchDay of filteredItems; trackBy: trackBy" (opened)="panelOpenState = true"
             (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -24,14 +22,19 @@
                     {{getDescription(matchDay.matches)}}
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div *ngFor="let match of matchDay.matches">
+            <div *ngFor="let match of matchDay.matches; trackBy: trackBy">
                 {{match.date}}
-                {{match.team1}}
-                <span [hidden]="!match?.score">{{match?.score?.ft[0]}}</span>
-                :
-                <span [hidden]="!match?.score">{{match?.score?.ft[1]}}</span>
-                {{match.team2}}
+                <span [routerLink]="['/details', matchDay.id, match.id]">
+                    {{match.team1}}
+                    <span [hidden]="!match?.score">{{match?.score?.ft[0]}}</span>
+                    :
+                    <span [hidden]="!match?.score">{{match?.score?.ft[1]}}</span>
+                    {{match.team2}}
+                </span>
             </div>
         </mat-expansion-panel>
     </mat-accordion>
+    <mat-chip-listbox [hidden]="filteredItems.length">
+        <mat-chip-option color="warn">No data to display!</mat-chip-option>
+    </mat-chip-listbox>
 </div>

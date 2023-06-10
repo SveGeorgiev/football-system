@@ -1,0 +1,7 @@
+<mat-form-field class="example-form-field">
+    <mat-label>Search Matches</mat-label>
+    <input matInput type="text" [(ngModel)]="searchValue" (keypress)="onSearch($event.target)">
+    <button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearchValue()">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>

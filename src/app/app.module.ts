@@ -14,12 +14,15 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { FormsModule } from '@angular/forms';
 
 import { DetailsComponent } from './pages/details/details.component';
 import { MatchesComponent } from './pages/matches/matches.component';
+import { SearchComponent } from './shared/search/search.component';
 
 const materialModules = [
   MatInputModule,
+  FormsModule,
   MatButtonModule,
   MatCardModule,
   MatListModule,
@@ -34,6 +37,7 @@ const materialModules = [
     AppComponent,
     DetailsComponent,
     MatchesComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,
