@@ -17,7 +17,8 @@ export class MatchesComponent implements OnInit, OnDestroy {
   public name: string = '';
   public matchDayGroup: any[] = [];
   public filteredItems: any[] = [];
-  public panelOpenState = false;
+  public isLoading: boolean = true;
+  public panelOpenState: boolean = false;
 
   constructor(
     private matchesService: MatchesService,
@@ -25,6 +26,14 @@ export class MatchesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.getMatches();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
+
+  private getMatches() {
     this.subs.push(this.matchesService.getMatches().subscribe(
       {
         next: (result: any) => {
@@ -33,16 +42,14 @@ export class MatchesComponent implements OnInit, OnDestroy {
           this.name = name;
           this.matchDayGroup = matchDayGroup;
           this.filteredItems = matchDayGroup;
+          this.isLoading = false;
         },
         error: error => {
+          this.isLoading = false;
           this.errorHandlingService.setErrorMessage('An error occurred during the API request.');
           console.log(error);
         }
       }));
-  }
-
-  ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
   }
 
   public getDescription(matches) {
@@ -65,21 +72,24 @@ export class MatchesComponent implements OnInit, OnDestroy {
 
   public onSearch(query: any): void {
     const searchText = query.trim().toLowerCase();
-    if (searchText === '') {
-      this.filteredItems = this.matchDayGroup;
-    } else {
-      const filtered = this.matchDayGroup.reduce((acc, curr) => {
-        const { matches } = curr;
-        const matchesFiltered = matches.filter(m => {
-          const filterText = `${m.round} ${m.date} ${m.team1} ${m.team2}`.toLowerCase()
-          return filterText.includes(query);
-        });
-        return matchesFiltered.length
-          ? [...acc, { ...curr, matches: matchesFiltered }]
-          : acc;
+    searchText === ''
+      ? this.filteredItems = this.matchDayGroup
+      : this.filteredItems = this.getFiltredData(searchText);
+  }
 
-      }, [])
-      this.filteredItems = filtered;
-    }
+  private getFiltredData(searchText) {
+    return this.matchDayGroup.reduce((acc, curr) => {
+      const { matches } = curr;
+      const matchesFiltered = matches.filter(m => {
+        const combinedDataText = `${m.round} ${m.date} ${m.team1} ${m.team2}`.toLowerCase()
+        const withScore = m?.score
+          ? `${combinedDataText} ${m?.score.ft[0]}:${m?.score.ft[1]}`
+          : combinedDataText;
+        return withScore.includes(searchText);
+      });
+      return matchesFiltered.length
+        ? [...acc, { ...curr, matches: matchesFiltered }]
+        : acc;
+    }, [])
   }
 }

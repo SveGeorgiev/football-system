@@ -22,7 +22,7 @@ export class DetailsComponent implements OnInit {
       const matchId = +params.get('matchId');
       const { name, matchDayGroup: { matches } } = this.matchesService.getMatchDay(matchDayId);
       this.seasonName = name;
-      this.match = matches.find(v => v.id === matchId) || {};
+      this.match = matches?.find(match => match.id === matchId) || {};
     });
   }
 

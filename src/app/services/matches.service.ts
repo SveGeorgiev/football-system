@@ -24,7 +24,7 @@ export class MatchesService {
   public getMatchDay(matchDayId) {
     return {
       ...this.matchesCashed,
-      matchDayGroup: this.matchesCashed.matchDayGroup.find(v => v.id === matchDayId)
+      matchDayGroup: this.matchesCashed?.matchDayGroup.find(v => v.id === matchDayId) || []
     };
   }
 

@@ -1,4 +1,5 @@
 <div class="matches-container">
+    <mat-progress-bar *ngIf="isLoading" mode="query"></mat-progress-bar>
     <mat-chip-listbox *ngIf="getErrorMessage()">
         <mat-chip-option color="warn">{{ getErrorMessage() }}</mat-chip-option>
     </mat-chip-listbox>
@@ -10,7 +11,7 @@
             <app-search (searchQuery)="onSearch($event)"></app-search>
         </mat-card-content>
     </mat-card>
-    <mat-accordion [hidden]="!filteredItems.length">
+    <mat-accordion *ngIf="filteredItems.length; else noData">
         <mat-expansion-panel *ngFor="let matchDay of filteredItems; trackBy: trackBy" (opened)="panelOpenState = true"
             (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
@@ -22,19 +23,19 @@
                     {{getDescription(matchDay.matches)}}
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div *ngFor="let match of matchDay.matches; trackBy: trackBy">
+            <div class="panel-content-matches" *ngFor="let match of matchDay.matches; trackBy: trackBy"
+                [routerLink]="['/details', matchDay.id, match.id]">
                 {{match.date}}
-                <span [routerLink]="['/details', matchDay.id, match.id]">
-                    {{match.team1}}
-                    <span [hidden]="!match?.score">{{match?.score?.ft[0]}}</span>
-                    :
-                    <span [hidden]="!match?.score">{{match?.score?.ft[1]}}</span>
-                    {{match.team2}}
+                <span *ngIf="match?.score; else withoutScore">
+                    {{match.team1}} {{match?.score?.ft[0]}} : {{match?.score?.ft[1]}} {{match.team2}}
                 </span>
+                <ng-template #withoutScore>
+                    {{match.team1}} : {{match.team2}}
+                </ng-template>
             </div>
         </mat-expansion-panel>
     </mat-accordion>
-    <mat-chip-listbox [hidden]="filteredItems.length">
-        <mat-chip-option color="warn">No data to display!</mat-chip-option>
-    </mat-chip-listbox>
+    <ng-template #noData>
+        <span class="no-data-text">No data to display!</span>
+    </ng-template>
 </div>
