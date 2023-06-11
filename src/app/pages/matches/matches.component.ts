@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { isNil } from 'lodash';
+import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
 
 @Component({
   selector: 'app-matches',
@@ -8,7 +9,7 @@ import { isNil } from 'lodash';
   styleUrls: ['./matches.component.scss']
 })
 export class MatchesComponent {
-  @Input() matchDays: any[];
+  @Input() matchDays: MatchDay[];
   public panelOpenState: boolean = false;
 
   public getDescription(matches) {

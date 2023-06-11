@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DetailsComponent } from './pages/details/details.component';
 import { SeasonComponent } from './pages/season/season.component';
-import { SearchComponent } from './shared/search/search.component';
+import { SearchComponent } from './shared/components/search/search.component';
 import { MatchesComponent } from './pages/matches/matches.component';
 
 const materialModules = [

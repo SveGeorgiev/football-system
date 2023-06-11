@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatchesService } from 'src/app/services/matches.service';
+
+import { SeasonService } from 'src/app/services/season.service';
+import { Match } from 'src/app/shared/interfaces/match.interface';
 
 @Component({
   selector: 'app-details',
@@ -9,20 +11,20 @@ import { MatchesService } from 'src/app/services/matches.service';
 })
 export class DetailsComponent implements OnInit {
   public seasonName: string = '';
-  public match: any = {};
+  public match: Match;
 
   constructor(
     private route: ActivatedRoute,
-    private matchesService: MatchesService
+    private seasonService: SeasonService
   ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const matchDayId = +params.get('matchDayId');
-      const matchId = +params.get('matchId');
-      const { name, matchDayGroup: { matches } } = this.matchesService.getMatchDay(matchDayId);
+      const matchDayId = +params.get('matchDayId')!;
+      const matchId = +params.get('matchId')!;
+      const { name, matchDayGroup: { matches } } = this.seasonService.getMatchDay(matchDayId);
       this.seasonName = name;
-      this.match = matches?.find(match => match.id === matchId) || {};
+      this.match = matches?.find((match: Match) => match.id === matchId) || {};
     });
   }
 

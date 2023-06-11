@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { MatchesService } from 'src/app/services/matches.service';
+import { SeasonService } from 'src/app/services/season.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
+import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
+import { Season } from 'src/app/shared/interfaces/season.interface';
 
 @Component({
   selector: 'app-season',
@@ -13,13 +15,13 @@ export class SeasonComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
 
   public name: string = '';
-  public matchDayGroup: any[] = [];
-  public filteredItems: any[] = [];
+  public matchDayGroup: MatchDay[] = [];
+  public filteredItems: MatchDay[] = [];
   public isLoading: boolean = true;
   public panelOpenState: boolean = false;
 
   constructor(
-    private matchesService: MatchesService,
+    private seasonService: SeasonService,
     private errorHandlingService: ErrorHandlingService
   ) { }
 
@@ -32,10 +34,10 @@ export class SeasonComponent implements OnInit, OnDestroy {
   }
 
   private getMatches() {
-    this.subs.push(this.matchesService.getMatches().subscribe(
+    this.subs.push(this.seasonService.getMatches().subscribe(
       {
-        next: (result: any) => {
-          this.matchesService.setMatches(result);
+        next: (result: Season) => {
+          this.seasonService.setMatches(result);
           const { name, matchDayGroup } = result;
           this.name = name;
           this.matchDayGroup = matchDayGroup;
@@ -54,7 +56,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
     return this.errorHandlingService.getErrorMessage();
   }
 
-  public onSearch(query: any): void {
+  public onSearch(query: string): void {
     const searchText = query.trim().toLowerCase();
     searchText === ''
       ? this.filteredItems = this.matchDayGroup
