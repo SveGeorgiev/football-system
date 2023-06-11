@@ -11,10 +11,10 @@
             </mat-panel-description>
         </mat-expansion-panel-header>
         <div class="panel-content-matches" *ngFor="let match of matchDay.matches; trackBy: trackBy"
-            [routerLink]="['/details', matchDay.id, match.id]">
+            [routerLink]="['/details', match.id]">
             {{match.date}}
             <span *ngIf="match?.score; else withoutScore">
-                {{match.team1}} {{match?.score?.ft[0]}} : {{match?.score?.ft[1]}} {{match.team2}}
+                {{match.team1}} {{match?.score?.ft?.[0]}} : {{match?.score?.ft?.[1]}} {{match.team2}}
             </span>
             <ng-template #withoutScore>
                 {{match.team1}} : {{match.team2}}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorHandlingService {
-  private errorMessage: string;
+  private errorMessage: string = '';
 
   constructor() { }
 

@@ -34,14 +34,14 @@ export class SeasonComponent implements OnInit, OnDestroy {
   }
 
   private getMatches() {
-    this.subs.push(this.seasonService.getMatches().subscribe(
+    this.subs.push(this.seasonService.getSeason().subscribe(
       {
-        next: (result: Season) => {
-          this.seasonService.setMatches(result);
-          const { name, matchDayGroup } = result;
+        next: (season: Season) => {
+          this.seasonService.setSeason(season);
+          const { name, matchDayGroup } = season;
           this.name = name;
-          this.matchDayGroup = matchDayGroup;
-          this.filteredItems = matchDayGroup;
+          this.matchDayGroup = matchDayGroup || [];
+          this.filteredItems = matchDayGroup || [];
           this.isLoading = false;
         },
         error: error => {
@@ -63,8 +63,8 @@ export class SeasonComponent implements OnInit, OnDestroy {
       : this.filteredItems = this.getFiltredData(searchText);
   }
 
-  private getFiltredData(searchText) {
-    return this.matchDayGroup.reduce((acc, curr) => {
+  private getFiltredData(searchText: string) {
+    return this.matchDayGroup.reduce((acc: MatchDay[], curr: MatchDay) => {
       const { matches } = curr;
       const matchesFiltered = matches.filter(m => {
         const combinedDataText = `${m.round} ${m.date} ${m.team1} ${m.team2}`.toLowerCase()
@@ -76,6 +76,6 @@ export class SeasonComponent implements OnInit, OnDestroy {
       return matchesFiltered.length
         ? [...acc, { ...curr, matches: matchesFiltered }]
         : acc;
-    }, [])
+    }, []);
   }
 }

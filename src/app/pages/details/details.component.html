@@ -1,9 +1,9 @@
 <mat-card class="example-card">
-    <mat-card-header>
+    <mat-card-header *ngIf="match">
         <mat-card-title-group>
             <mat-card-title>
                 <span *ngIf="match?.score; else withoutScore">
-                    {{match.team1}} {{match?.score?.ft[0]}} : {{match?.score?.ft[1]}} {{match.team2}}
+                    {{match.team1}} {{match.score?.ft?.[0]}} : {{match.score?.ft?.[1]}} {{match.team2}}
                 </span>
                 <ng-template #withoutScore>
                     {{match.team1}} : {{match.team2}}
@@ -14,7 +14,7 @@
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC45-M8ILF_9AmCVFFEXo3XL5UXcK0DRVoug&usqp=CAU">
         </mat-card-title-group>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content *ngIf="match">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
         a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,

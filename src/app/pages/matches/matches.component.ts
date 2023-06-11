@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { isNil } from 'lodash';
+import { Match } from 'src/app/shared/interfaces/match.interface';
 import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
 
 @Component({
@@ -9,10 +10,10 @@ import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
   styleUrls: ['./matches.component.scss']
 })
 export class MatchesComponent {
-  @Input() matchDays: MatchDay[];
+  @Input() matchDays: MatchDay[] = [];
   public panelOpenState: boolean = false;
 
-  public getDescription(matches) {
+  public getDescription(matches: Match[]) {
     const [first, ...rest] = matches;
     const { date } = first;
     const lastDate = rest.pop()?.date;
