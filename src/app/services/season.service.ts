@@ -40,33 +40,53 @@ export class SeasonService {
   }
 
   /**
-   * Fetches the season data from the API and performs necessary transformations.
-   * @returns Observable<Season> The transformed season data
+   * Fetches the season data from the API endpoint.
+   * @returns An Observable of type 'Season' representing the fetched season data.
    */
   private fetchSeason(): Observable<Season> {
+    // Construct the URL for the API request
     const getURL = `${Constants.BASE_URL_API}/master/2020-21/en.1.json`;
+
     return this.http.get(getURL).pipe(
       map((response: any) => {
-        const mapped = {
-          ...response,
-          matches: response.matches.map((m: Match, index: number) => ({ ...m, id: index + 1 }))
-        };
-        return this.groupMatchDays(mapped);
+        // Map the response data to the desired format
+        const mapped = this.mapDataResponse(response);
+        const grouped = this.groupMatchDays(mapped);
+        // Group the matches by round
+        return grouped;
       })
     );
   }
 
   /**
-   * Groups the matches by their round and formats the match dates.
+   * Maps the response data received from the API request.
+   * @param response The response data received from the API request.
+   * @returns The mapped data with transformed matches array.
+   */
+  private mapDataResponse(response: any) {
+    return {
+      ...response,
+      matches: response.matches.map((match: Match, index: number) => {
+        // Add 'id' property with a unique value and format the 'date' property
+        return {
+          ...match,
+          id: index + 1,
+          date: moment(match.date).utc().format('LL')
+        };
+      })
+    };
+  }
+
+  /**
+   * Groups the matches by their round.
    * @param response The season data to process
    * @returns The season data with grouped match days
    */
   private groupMatchDays(response: Season): Season {
     const { matches } = response;
     const grouped = groupBy(matches, 'round');
-    const matchDayGroup = Object.values(grouped).reduce((acc: any, curr: Match[], index: number) => {
-      const [first] = curr || {};
-      const matches = curr.map((m: Match) => ({ ...m, date: moment(m.date).utc().format('LL') }));
+    const matchDayGroup = Object.values(grouped).reduce((acc: any, matches: Match[], index: number) => {
+      const [first] = matches || {};
       return [...acc, { id: index + 1, round: first.round, matches }];
     }, []);
     return { ...response, matchDayGroup };
