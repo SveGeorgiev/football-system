@@ -13,7 +13,7 @@ export class MatchesComponent {
   @Input() matchDays: MatchDay[] = [];
   public panelOpenState: boolean = false;
 
-  public getDescription(matches: Match[]) {
+  public getDescription(matches: Match[]): string {
     const [first, ...rest] = matches;
     const { date } = first;
     const lastDate = rest.pop()?.date;

@@ -26,14 +26,14 @@ export class SeasonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getMatches();
+    this.getSeason();
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
 
-  private getMatches() {
+  private getSeason(): void {
     this.subs.push(this.seasonService.getSeason().subscribe(
       {
         next: (season: Season) => {
@@ -52,7 +52,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
       }));
   }
 
-  public getErrorMessage() {
+  public getErrorMessage(): string {
     return this.errorHandlingService.getErrorMessage();
   }
 
@@ -63,7 +63,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
       : this.filteredItems = this.getFiltredData(searchText);
   }
 
-  private getFiltredData(searchText: string) {
+  private getFiltredData(searchText: string): MatchDay[] {
     return this.matchDayGroup.reduce((acc: MatchDay[], curr: MatchDay) => {
       const { matches } = curr;
       const matchesFiltered = matches.filter(m => {
