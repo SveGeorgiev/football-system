@@ -1,41 +1,27 @@
-<div class="matches-container">
-    <mat-progress-bar *ngIf="isLoading" mode="query"></mat-progress-bar>
-    <mat-chip-listbox *ngIf="getErrorMessage()">
-        <mat-chip-option color="warn">{{ getErrorMessage() }}</mat-chip-option>
-    </mat-chip-listbox>
-    <mat-card>
-        <mat-card-header class="mat-card-header">
-            <h2>{{name}}</h2>
-        </mat-card-header>
-        <mat-card-content>
-            <app-search (searchQuery)="onSearch($event)"></app-search>
-        </mat-card-content>
-    </mat-card>
-    <mat-accordion *ngIf="filteredItems.length; else noData">
-        <mat-expansion-panel *ngFor="let matchDay of filteredItems; trackBy: trackBy" (opened)="panelOpenState = true"
-            (closed)="panelOpenState = false">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-icon>sports_soccer</mat-icon>
-                    {{matchDay.round}}
-                </mat-panel-title>
-                <mat-panel-description>
-                    {{getDescription(matchDay.matches)}}
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="panel-content-matches" *ngFor="let match of matchDay.matches; trackBy: trackBy"
-                [routerLink]="['/details', matchDay.id, match.id]">
-                {{match.date}}
-                <span *ngIf="match?.score; else withoutScore">
-                    {{match.team1}} {{match?.score?.ft[0]}} : {{match?.score?.ft[1]}} {{match.team2}}
-                </span>
-                <ng-template #withoutScore>
-                    {{match.team1}} : {{match.team2}}
-                </ng-template>
-            </div>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <ng-template #noData>
-        <span class="no-data-text">No data to display!</span>
-    </ng-template>
-</div>
+<mat-accordion *ngIf="matchDays.length; else noData">
+    <mat-expansion-panel *ngFor="let matchDay of matchDays; trackBy: trackBy" (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>sports_soccer</mat-icon>
+                {{matchDay.round}}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{getDescription(matchDay.matches)}}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="panel-content-matches" *ngFor="let match of matchDay.matches; trackBy: trackBy"
+            [routerLink]="['/details', matchDay.id, match.id]">
+            {{match.date}}
+            <span *ngIf="match?.score; else withoutScore">
+                {{match.team1}} {{match?.score?.ft[0]}} : {{match?.score?.ft[1]}} {{match.team2}}
+            </span>
+            <ng-template #withoutScore>
+                {{match.team1}} : {{match.team2}}
+            </ng-template>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>
+<ng-template #noData>
+    <span class="no-data-text">No data to display!</span>
+</ng-template>

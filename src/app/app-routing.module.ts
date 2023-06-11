@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { MatchesComponent } from './pages/matches/matches.component';
+import { SeasonComponent } from './pages/season/season.component';
 import { DetailsComponent } from './pages/details/details.component';
 
 const routes: Routes = [
-  { path: 'matches', component: MatchesComponent, data: { label: 'matches' } },
+  { path: 'season', component: SeasonComponent, data: { label: 'season' } },
   { path: 'details/:matchDayId/:matchId', component: DetailsComponent, data: { label: 'details' } },
   { path: '', redirectTo: 'matches', pathMatch: 'full' },
-  { path: '**', component: MatchesComponent }
+  { path: '**', component: SeasonComponent }
 ];
 
 @NgModule({
