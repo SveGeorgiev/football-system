@@ -1,3 +1,6 @@
+/**
+ * Component representing the Season page.
+ */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -20,19 +23,36 @@ export class SeasonComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public panelOpenState: boolean = false;
 
+  /**
+ * Constructs the SeasonComponent.
+ * @param seasonService The service for retrieving season data.
+ * @param errorHandlingService The service for error handling.
+ */
   constructor(
     private seasonService: SeasonService,
     private errorHandlingService: ErrorHandlingService
   ) { }
 
+  /**
+ * Lifecycle hook that is called after the component has been initialized.
+ * It retrieves the season data.
+ */
   ngOnInit(): void {
     this.getSeason();
   }
 
+  /**
+ * Lifecycle hook that is called when the component is about to be destroyed.
+ * It unsubscribes from any active subscriptions.
+ */
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
 
+  /**
+ * Retrieves the season data from the season service.
+ * Sets the component properties based on the retrieved data.
+ */
   private getSeason(): void {
     this.subs.push(this.seasonService.getSeason().subscribe(
       {
@@ -52,10 +72,18 @@ export class SeasonComponent implements OnInit, OnDestroy {
       }));
   }
 
+  /**
+ * Retrieves the error message from the error handling service.
+ * @returns The error message.
+ */
   public getErrorMessage(): string {
     return this.errorHandlingService.getErrorMessage();
   }
 
+  /**
+ * Handles the search event and filters the match day group based on the search query.
+ * @param query The search query.
+ */
   public onSearch(query: string): void {
     const searchText = query.trim().toLowerCase();
     searchText === ''
@@ -63,6 +91,11 @@ export class SeasonComponent implements OnInit, OnDestroy {
       : this.filteredItems = this.getFiltredData(searchText);
   }
 
+  /**
+ * Filters the match day group based on the search query.
+ * @param searchText The search query.
+ * @returns The filtered match day group.
+ */
   private getFiltredData(searchText: string): MatchDay[] {
     return this.matchDayGroup.reduce((acc: MatchDay[], curr: MatchDay) => {
       const { matches } = curr;

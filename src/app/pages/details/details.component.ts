@@ -1,3 +1,6 @@
+/**
+ * Component representing the details of a match.
+ */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';

@@ -1,3 +1,6 @@
+/**
+ * Component representing the Matches section.
+ */
 import { Component, Input } from '@angular/core';
 
 import { isNil } from 'lodash';
@@ -13,6 +16,11 @@ export class MatchesComponent {
   @Input() matchDays: MatchDay[] = [];
   public panelOpenState: boolean = false;
 
+  /**
+   * Retrieves the description for a list of matches.
+   * @param matches The list of matches.
+   * @returns The description string.
+   */
   public getDescription(matches: Match[]): string {
     const [first, ...rest] = matches;
     const { date } = first;
@@ -21,6 +29,12 @@ export class MatchesComponent {
     return isNil(lastDate) || date === lastDate ? date : `${date} - ${lastDate}`;
   }
 
+  /**
+   * Tracks the items in a list by their index.
+   * @param index The index of the item.
+   * @param item The item object.
+   * @returns The unique identifier for the item.
+   */
   public trackBy(index: number, item: any): number {
     return item.id;
   }
