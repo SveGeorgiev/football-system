@@ -8,6 +8,7 @@ import { SeasonService } from 'src/app/services/season.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
 import { Season } from 'src/app/shared/interfaces/season.interface';
+import { League } from 'src/app/shared/interfaces/league.interface';
 
 @Component({
   selector: 'app-season',
@@ -20,8 +21,13 @@ export class SeasonComponent implements OnInit, OnDestroy {
   public name: string = '';
   public matchDayGroup: MatchDay[] = [];
   public filteredItems: MatchDay[] = [];
-  public isLoading: boolean = true;
+  public isLoading: boolean = false;
   public panelOpenState: boolean = false;
+  public leagues: League[] = [
+    { id: 1, name: 'Premier League' },
+    { id: 2, name: 'Championship' },
+    { id: 3, name: 'League One' },
+    { id: 4, name: 'League Two' }];
 
   /**
  * Constructs the SeasonComponent.
@@ -53,11 +59,12 @@ export class SeasonComponent implements OnInit, OnDestroy {
  * Retrieves the season data from the season service.
  * Sets the component properties based on the retrieved data.
  */
-  private getSeason(): void {
-    this.subs.push(this.seasonService.getSeason().subscribe(
+  private getSeason(leagueId: string = '1'): void {
+    this.isLoading = true;
+    this.subs.push(this.seasonService.getSeason(leagueId).subscribe(
       {
         next: (season: Season) => {
-          this.seasonService.setSeason(season);
+          this.seasonService.setSeason(season, leagueId);
           const { name, matchDayGroup } = season;
           this.name = name;
           this.matchDayGroup = matchDayGroup || [];
@@ -89,6 +96,10 @@ export class SeasonComponent implements OnInit, OnDestroy {
     searchText === ''
       ? this.filteredItems = this.matchDayGroup
       : this.filteredItems = this.getFiltredData(searchText);
+  }
+
+  public onSelect(id: string): void {
+    this.getSeason(id);
   }
 
   /**

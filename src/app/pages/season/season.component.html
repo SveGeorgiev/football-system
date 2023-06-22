@@ -4,6 +4,7 @@
         <mat-chip-option color="warn">{{ getErrorMessage() }}</mat-chip-option>
     </mat-chip-listbox>
     <mat-card>
+        <app-select label="League" [options]="leagues" (selection)="onSelect($event)"></app-select>
         <mat-card-header class="mat-card-header">
             <h2>{{name}}</h2>
         </mat-card-header>

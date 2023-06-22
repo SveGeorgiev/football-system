@@ -15,15 +15,20 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 
 import { DetailsComponent } from './pages/details/details.component';
 import { SeasonComponent } from './pages/season/season.component';
 import { SearchComponent } from './shared/components/search/search.component';
 import { MatchesComponent } from './pages/matches/matches.component';
+import { SelectComponent } from './shared/components/select/select.component';
 
 const materialModules = [
   MatInputModule,
   FormsModule,
+  MatFormFieldModule,
+  MatSelectModule,
   MatButtonModule,
   MatCardModule,
   MatListModule,
@@ -40,6 +45,7 @@ const materialModules = [
     SeasonComponent,
     SearchComponent,
     MatchesComponent,
+    SelectComponent,
   ],
   imports: [
     BrowserModule,

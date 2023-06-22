@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, map, of } from 'rxjs';
-import { groupBy, isNil } from 'lodash';
+import { groupBy, isNil, isEqual } from 'lodash';
 import * as moment from 'moment';
 
 import Constants from '../shared/constants';
@@ -15,6 +15,7 @@ import { Match } from '../shared/interfaces/match.interface';
 @Injectable({ providedIn: 'root' })
 export class SeasonService {
   private seasonCached?: Season;
+  private leagueId: string = '';
 
   constructor(private http: HttpClient) { }
 
@@ -24,9 +25,9 @@ export class SeasonService {
    * Otherwise, it fetches the season data from the API.
    * @returns Observable<Season> The season data
    */
-  public getSeason(): Observable<Season> {
-    if (isNil(this.seasonCached)) {
-      return this.fetchSeason();
+  public getSeason(leagueId: string = '1'): Observable<Season> {
+    if (!isEqual(leagueId, this.leagueId) || isNil(this.seasonCached)) {
+      return this.fetchSeason(leagueId);
     }
     return of(this.seasonCached);
   }
@@ -35,24 +36,25 @@ export class SeasonService {
    * Caches the provided season data.
    * @param season The season data to cache
    */
-  public setSeason(season: Season): void {
+  public setSeason(season: Season, leagueId: string): void {
     this.seasonCached = season;
+    this.leagueId = leagueId;
   }
 
   /**
    * Fetches the season data from the API endpoint.
    * @returns An Observable of type 'Season' representing the fetched season data.
    */
-  private fetchSeason(): Observable<Season> {
+  private fetchSeason(leagueId: string): Observable<Season> {
     // Construct the URL for the API request
-    const getURL = `${Constants.BASE_URL_API}/master/2020-21/en.1.json`;
+    const getURL = `${Constants.BASE_URL_API}/master/2020-21/en.${leagueId}.json`;
 
     return this.http.get(getURL).pipe(
       map((response: any) => {
         // Map the response data to the desired format
         const mapped = this.mapDataResponse(response);
-        const grouped = this.groupMatchDays(mapped);
         // Group the matches by round
+        const grouped = this.groupMatchDays(mapped);
         return grouped;
       })
     );
