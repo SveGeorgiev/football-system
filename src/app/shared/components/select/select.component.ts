@@ -8,15 +8,15 @@ import { League } from '../../interfaces/league.interface';
   styleUrls: ['./select.component.scss']
 })
 export class SelectComponent {
-  @Output() selection: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onSelection: EventEmitter<string> = new EventEmitter<string>();
 
   @Input() label: string = '';
-  @Input() selectValue: number = 1;
+  @Input() selectValue: number = NaN;
   @Input() options: League[] = [];
 
   constructor() { }
 
   public onSelect(event: MatSelectChange) {
-    this.selection.emit(event.value)
+    this.onSelection.emit(event.value)
   }
 }

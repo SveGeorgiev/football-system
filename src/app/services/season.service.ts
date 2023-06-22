@@ -5,17 +5,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, map, of } from 'rxjs';
-import { groupBy, isNil, isEqual } from 'lodash';
+import { groupBy, isNil, isEqual, cloneDeep } from 'lodash';
 import * as moment from 'moment';
 
 import Constants from '../shared/constants';
 import { Season } from '../shared/interfaces/season.interface';
 import { Match } from '../shared/interfaces/match.interface';
+import { SeasonPayload } from '../shared/interfaces/season-payload.interface';
 
 @Injectable({ providedIn: 'root' })
 export class SeasonService {
   private seasonCached?: Season;
-  private leagueId: string = '';
+  private seasonPayload: SeasonPayload = { seasonId: 20, leagueId: 1 };
 
   constructor(private http: HttpClient) { }
 
@@ -25,9 +26,9 @@ export class SeasonService {
    * Otherwise, it fetches the season data from the API.
    * @returns Observable<Season> The season data
    */
-  public getSeason(leagueId: string = '1'): Observable<Season> {
-    if (!isEqual(leagueId, this.leagueId) || isNil(this.seasonCached)) {
-      return this.fetchSeason(leagueId);
+  public getSeason(seasonPayload: SeasonPayload = { leagueId: 1, seasonId: 15 }): Observable<Season> {
+    if (!isEqual(seasonPayload, this.seasonPayload) || isNil(this.seasonCached)) {
+      return this.fetchSeason(seasonPayload);
     }
     return of(this.seasonCached);
   }
@@ -36,18 +37,20 @@ export class SeasonService {
    * Caches the provided season data.
    * @param season The season data to cache
    */
-  public setSeason(season: Season, leagueId: string): void {
+  public setSeason(season: Season, seasonPayload: SeasonPayload): void {
     this.seasonCached = season;
-    this.leagueId = leagueId;
+    this.seasonPayload = cloneDeep(seasonPayload);
   }
 
   /**
    * Fetches the season data from the API endpoint.
    * @returns An Observable of type 'Season' representing the fetched season data.
    */
-  private fetchSeason(leagueId: string): Observable<Season> {
+  private fetchSeason(seasonPayload: SeasonPayload): Observable<Season> {
+    const { leagueId, seasonId } = seasonPayload
+    const season = `20${seasonId}-${seasonId + 1}`
     // Construct the URL for the API request
-    const getURL = `${Constants.BASE_URL_API}/master/2020-21/en.${leagueId}.json`;
+    const getURL = `${Constants.BASE_URL_API}/master/${season}/en.${leagueId}.json`;
 
     return this.http.get(getURL).pipe(
       map((response: any) => {

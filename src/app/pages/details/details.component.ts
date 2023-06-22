@@ -16,7 +16,7 @@ import { Season } from 'src/app/shared/interfaces/season.interface';
 })
 export class DetailsComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
-
+  
   public match?: Match;
 
   constructor(

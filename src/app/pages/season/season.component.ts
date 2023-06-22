@@ -6,9 +6,12 @@ import { Subscription } from 'rxjs';
 
 import { SeasonService } from 'src/app/services/season.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
+
 import { MatchDay } from 'src/app/shared/interfaces/matchday.interface';
 import { Season } from 'src/app/shared/interfaces/season.interface';
 import { League } from 'src/app/shared/interfaces/league.interface';
+import { SeasonSelection } from 'src/app/shared/interfaces/season-selection.interface';
+import { SeasonPayload } from 'src/app/shared/interfaces/season-payload.interface';
 
 @Component({
   selector: 'app-season',
@@ -27,7 +30,14 @@ export class SeasonComponent implements OnInit, OnDestroy {
     { id: 1, name: 'Premier League' },
     { id: 2, name: 'Championship' },
     { id: 3, name: 'League One' },
-    { id: 4, name: 'League Two' }];
+    { id: 4, name: 'League Two' }
+  ];
+  public seasons: SeasonSelection[] = [
+    { id: 20, name: '2020/21' },
+    { id: 19, name: '2019/20' },
+    { id: 18, name: '2018/19' }
+  ];
+  public seasonPayload: SeasonPayload = { seasonId: 20, leagueId: 1 };
 
   /**
  * Constructs the SeasonComponent.
@@ -59,12 +69,12 @@ export class SeasonComponent implements OnInit, OnDestroy {
  * Retrieves the season data from the season service.
  * Sets the component properties based on the retrieved data.
  */
-  private getSeason(leagueId: string = '1'): void {
+  private getSeason(): void {
     this.isLoading = true;
-    this.subs.push(this.seasonService.getSeason(leagueId).subscribe(
+    this.subs.push(this.seasonService.getSeason(this.seasonPayload).subscribe(
       {
         next: (season: Season) => {
-          this.seasonService.setSeason(season, leagueId);
+          this.seasonService.setSeason(season, this.seasonPayload);
           const { name, matchDayGroup } = season;
           this.name = name;
           this.matchDayGroup = matchDayGroup || [];
@@ -98,8 +108,14 @@ export class SeasonComponent implements OnInit, OnDestroy {
       : this.filteredItems = this.getFiltredData(searchText);
   }
 
-  public onSelect(id: string): void {
-    this.getSeason(id);
+  public onSelectLeague(leagueId: string): void {
+    this.seasonPayload.leagueId = +leagueId
+    this.getSeason();
+  }
+
+  public onSelectSeason(seasonId: string): void {
+    this.seasonPayload.seasonId = +seasonId
+    this.getSeason();
   }
 
   /**
