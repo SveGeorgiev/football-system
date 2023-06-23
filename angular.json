@@ -105,7 +105,14 @@
             ],
             "scripts": []
           }
-        }
+        },
+         "deploy": {
+            "builder": "@angular-devkit/build-angular:deploy",
+            "options": {
+              "baseHref": "https://svegeorgiev.github.io/football-system/",
+              "outputPath": "dist/football-system"
+            }
+          }
       }
     }
   }
