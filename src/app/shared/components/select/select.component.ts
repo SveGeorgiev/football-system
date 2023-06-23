@@ -14,9 +14,7 @@ export class SelectComponent {
   @Input() selectValue: number = NaN;
   @Input() options: League[] = [];
 
-  constructor() { }
+  public onSelect = (event: MatSelectChange) => this.onSelection.emit(event.value)
 
-  public onSelect(event: MatSelectChange) {
-    this.onSelection.emit(event.value)
-  }
+  public trackBy = (index: number, item: any): number => item.id;
 }

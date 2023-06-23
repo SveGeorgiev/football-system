@@ -35,7 +35,5 @@ export class MatchesComponent {
    * @param item The item object.
    * @returns The unique identifier for the item.
    */
-  public trackBy(index: number, item: any): number {
-    return item.id;
-  }
+  public trackBy = (index: number, item: any): number => item.id;
 }
