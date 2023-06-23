@@ -1,17 +1,18 @@
 <div class="season-container">
-    <mat-progress-bar *ngIf="isLoading" mode="query"></mat-progress-bar>
     <mat-chip-listbox *ngIf="getErrorMessage()">
         <mat-chip-option color="warn">{{ getErrorMessage() }}</mat-chip-option>
     </mat-chip-listbox>
     <mat-card>
-        <app-select label="League" [options]="leagues" [selectValue]="1" (onSelection)="onSelectLeague($event)"></app-select>
-        <app-select label="Seasons" [options]="seasons" [selectValue]="20" (onSelection)="onSelectSeason($event)"></app-select>
         <mat-card-header class="mat-card-header">
-            <h2>{{name}}</h2>
+            <app-select label="League" [options]="leagues" [selectValue]="leagueId"
+                (onSelection)="onSelectLeague($event)"></app-select>
+            <app-select label="Seasons" [options]="seasons" [selectValue]="seasonId"
+                (onSelection)="onSelectSeason($event)"></app-select>
+            <app-search (searchQuery)="onSearch($event)"></app-search>
         </mat-card-header>
         <mat-card-content>
-            <app-search (searchQuery)="onSearch($event)"></app-search>
+            <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+            <app-matches [matchDays]="filteredItems"></app-matches>
         </mat-card-content>
     </mat-card>
-    <app-matches [matchDays]="filteredItems"></app-matches>
 </div>

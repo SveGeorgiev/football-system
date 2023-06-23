@@ -16,7 +16,7 @@ import { SeasonPayload } from '../shared/interfaces/season-payload.interface';
 @Injectable({ providedIn: 'root' })
 export class SeasonService {
   private seasonCached?: Season;
-  private seasonPayload: SeasonPayload = { seasonId: 20, leagueId: 1 };
+  public seasonPayload: SeasonPayload = Constants.DEFAULT_SEASON_PAYLOAD;
 
   constructor(private http: HttpClient) { }
 
@@ -26,10 +26,13 @@ export class SeasonService {
    * Otherwise, it fetches the season data from the API.
    * @returns Observable<Season> The season data
    */
-  public getSeason(seasonPayload: SeasonPayload = { leagueId: 1, seasonId: 15 }): Observable<Season> {
-    if (!isEqual(seasonPayload, this.seasonPayload) || isNil(this.seasonCached)) {
-      return this.fetchSeason(seasonPayload);
+  public getSeason(seasonPayload?: SeasonPayload): Observable<Season> {
+    const sp = isNil(seasonPayload) ? this.seasonPayload : seasonPayload;
+
+    if (isNil(this.seasonCached) || !isEqual(sp, this.seasonPayload)) {
+      return this.fetchSeason(sp);
     }
+
     return of(this.seasonCached);
   }
 
@@ -38,7 +41,7 @@ export class SeasonService {
    * @param season The season data to cache
    */
   public setSeason(season: Season, seasonPayload: SeasonPayload): void {
-    this.seasonCached = season;
+    this.seasonCached = cloneDeep(season);
     this.seasonPayload = cloneDeep(seasonPayload);
   }
 
@@ -90,10 +93,10 @@ export class SeasonService {
   private groupMatchDays(response: Season): Season {
     const { matches } = response;
     const grouped = groupBy(matches, 'round');
-    const matchDayGroup = Object.values(grouped).reduce((acc: any, matches: Match[], index: number) => {
+    const matchDayGroup = Object.values(grouped).map((matches: Match[], index: number) => {
       const [first] = matches || {};
-      return [...acc, { id: index + 1, round: first.round, matches }];
-    }, []);
+      return { id: index + 1, round: first.round, matches };
+    });
     return { ...response, matchDayGroup };
   }
 }

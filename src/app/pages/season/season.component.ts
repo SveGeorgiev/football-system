@@ -13,6 +13,8 @@ import { League } from 'src/app/shared/interfaces/league.interface';
 import { SeasonSelection } from 'src/app/shared/interfaces/season-selection.interface';
 import { SeasonPayload } from 'src/app/shared/interfaces/season-payload.interface';
 
+import Constants from '../../shared/constants';
+
 @Component({
   selector: 'app-season',
   templateUrl: './season.component.html',
@@ -37,7 +39,10 @@ export class SeasonComponent implements OnInit, OnDestroy {
     { id: 19, name: '2019/20' },
     { id: 18, name: '2018/19' }
   ];
-  public seasonPayload: SeasonPayload = { seasonId: 20, leagueId: 1 };
+  public seasonId: number;
+  public leagueId: number;
+
+  private seasonPayload: SeasonPayload = Constants.DEFAULT_SEASON_PAYLOAD;
 
   /**
  * Constructs the SeasonComponent.
@@ -47,7 +52,11 @@ export class SeasonComponent implements OnInit, OnDestroy {
   constructor(
     private seasonService: SeasonService,
     private errorHandlingService: ErrorHandlingService
-  ) { }
+  ) {
+    const { seasonId, leagueId } = this.seasonPayload;
+    this.seasonId = seasonId;
+    this.leagueId = leagueId;
+  }
 
   /**
  * Lifecycle hook that is called after the component has been initialized.
